@@ -1,0 +1,26 @@
+{
+  "name": "medusa/api-resolver",
+  "description": "resolver endpoint for an easy to use microservice implementation",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pascal Schnell",
+      "email": "pascal.schnell@getmedusa.org"
+    }
+  ],
+  "require": {
+    "php": ">=8.0",
+    "ext-igbinary": "*",
+    "ext-curl": "*",
+    "ext-mysqli": "*",
+    "medusa/functions": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Medusa\\App\\ApiResolver\\": "src"
+    }
+  },
+  "require-dev": {
+    "medusa/dev-tools": "^1.0"
+  }
+}

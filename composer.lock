@@ -1,0 +1,107 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "3321ddc1bcc984a8b61639041c3c3ef7",
+    "packages": [
+        {
+            "name": "medusa/functions",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/medusaphp/functions.git",
+                "reference": "6652602fb9c611fd3622856b87c27f6aaeedf57d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/medusaphp/functions/zipball/6652602fb9c611fd3622856b87c27f6aaeedf57d",
+                "reference": "6652602fb9c611fd3622856b87c27f6aaeedf57d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/http_functions.php",
+                    "src/common_functions.php",
+                    "src/array_functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pascal Schnell",
+                    "email": "pascal.schnell@getmedusa.org"
+                }
+            ],
+            "description": "functions",
+            "support": {
+                "issues": "https://github.com/medusaphp/functions/issues",
+                "source": "https://github.com/medusaphp/functions/tree/1.0.0"
+            },
+            "time": "2021-06-08T08:43:00+00:00"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "medusa/dev-tools",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/medusaphp/dev-tools.git",
+                "reference": "de068f64b986f7851df2349aabe39a4d5a011e4e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/medusaphp/dev-tools/zipball/de068f64b986f7851df2349aabe39a4d5a011e4e",
+                "reference": "de068f64b986f7851df2349aabe39a4d5a011e4e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pascal Schnell",
+                    "email": "pascal.schnell@getmedusa.org"
+                }
+            ],
+            "description": "Helper functions for debugging",
+            "support": {
+                "issues": "https://github.com/medusaphp/dev-tools/issues",
+                "source": "https://github.com/medusaphp/dev-tools/tree/1.0.6"
+            },
+            "time": "2021-05-11T07:12:13+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.0",
+        "ext-igbinary": "*",
+        "ext-curl": "*",
+        "ext-mysqli": "*"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
+}

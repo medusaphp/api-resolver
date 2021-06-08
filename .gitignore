@@ -1,0 +1,5 @@
+.idea/
+vendor/
+coverage/
+._*
+.DS_*
