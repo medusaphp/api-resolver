@@ -13,7 +13,7 @@ CREATE TABLE account
     UNIQUE (`account_username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO msv1_account (account_username, account_password, account_enabled)
+INSERT INTO account (account_username, account_password, account_enabled)
 VALUES ("__NO_USER__", "__NO_USER__", true);
 
 ```
