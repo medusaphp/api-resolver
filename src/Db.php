@@ -18,7 +18,7 @@ use const MYSQLI_CLIENT_COMPRESS;
 
 /**
  * Class Db
- * @package medusa/app-apiresolver
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class Db {

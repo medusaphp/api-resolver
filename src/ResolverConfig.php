@@ -6,7 +6,7 @@ use function json_decode;
 
 /**
  * Class Config
- * @package medusa/app-apiresolver
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class ResolverConfig {
@@ -33,10 +33,18 @@ class ResolverConfig {
     public function getInternalNetworks(): array {
         return $this->data['internalNetworks'] ?? [];
     }
+
     /**
      * @return array
      */
     public function getDb(): array {
         return $this->data['database'] ?? [];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebugModeEnabled(): bool {
+        return ($this->data['debugMode'] ?? false) === true;
     }
 }

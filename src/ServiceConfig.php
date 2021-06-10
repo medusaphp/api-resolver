@@ -7,7 +7,7 @@ use function parse_ini_file;
 
 /**
  * Class ServiceConfig
- * @package medusa/app-apiresolver
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class ServiceConfig {

@@ -5,7 +5,7 @@ use function explode;
 
 /**
  * Class Response
- * @package medusa/app-apiresolver
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class Response {

@@ -5,7 +5,7 @@ use mysqli;
 
 /**
  * Class DatabaseException
- * @package medusa/app-apiresolver\Exception
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class DatabaseException extends ServerException {

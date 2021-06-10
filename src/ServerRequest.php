@@ -10,7 +10,7 @@ use function substr;
 
 /**
  * Class ServerRequest
- * @package medusa/app-apiresolver
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class ServerRequest {

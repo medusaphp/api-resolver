@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 namespace Medusa\App\ApiResolver;
 
-use Medusa\App\ApiResolver\Exception\ServerException;
-use function dd;
+use Medusa\Http\Simple\ServerException;
+use Medusa\Http\Simple\ServerRequest;
 use function explode;
 use function ip2long;
 use function is_string;
@@ -11,7 +11,7 @@ use function sprintf;
 
 /**
  * Class Doorman
- * @package medusa/app-apiresolver
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class Doorman {

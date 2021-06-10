@@ -5,7 +5,7 @@ use mysqli_stmt;
 
 /**
  * Class StatementException
- * @package medusa/app-apiresolver\Exception
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class StatementException extends DatabaseException {
