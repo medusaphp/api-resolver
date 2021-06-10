@@ -144,3 +144,26 @@ server {
 }
 
 ```
+
+### php entry point
+```php
+<?php declare(strict_types = 1);
+
+use Medusa\App\ApiResolver\Resolver;
+use Medusa\App\ApiResolver\ResolverConfig;
+
+chdir(__DIR__);
+
+require_once '../vendor/autoload.php';
+
+// Remove custom headers
+foreach (headers_list() as $header) {
+    header_remove(explode(':', $header, 2)[0]);
+}
+
+$response = (new Resolver(
+    ResolverConfig::load('../env.json')
+))->start();
+
+array_map('header', $response->getHeaders(true));
+echo $response->getBody();

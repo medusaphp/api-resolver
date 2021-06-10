@@ -1,23 +1,26 @@
 <?php declare(strict_types = 1);
 namespace Medusa\App\ApiResolver;
 
-use Medusa\Http\Simple\ServerRequest;
 use function preg_match;
 
 /**
- * Class ApiRequestWrapper
+ * Class RequestedPathTranslator
  * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
-class ApiRequestWrapper extends ServerRequest {
+class RequestedPathTranslator {
 
-    protected string $project;
-    protected string $controllerNamespace;
-    protected string $controllerName;
-    protected string $controllerVersion;
-    protected string $servicesRoot;
+    public function __construct(
+        protected string $project,
+        protected string $controllerNamespace,
+        protected string $controllerName,
+        protected string $controllerVersion,
+        protected string $servicesRoot
+    ) {
 
-    public static function createFromGlobals(): ?self {
+    }
+
+    public static function createFromGlobals(): ?static {
 
         if (!preg_match('#^/([a-z0-9_-]+)/([a-z0-9_-]+)/([a-z0-9_-]+)(.*)/(\d+.\d+.\d+)/#i', $_SERVER['REQUEST_URI'], $matches)) {
             return null;
@@ -25,17 +28,17 @@ class ApiRequestWrapper extends ServerRequest {
 
         $servicesRoot = $_SERVER['API_SERVICES_LOCATION'];
 
-        /** @var ApiRequestWrapper $request */
-        $request = parent::createFromGlobals();
-
         [, $project, $controllerNamespace, $controllerName, $controllerVersion] = $matches;
 
-        $request->project = $project;
-        $request->controllerNamespace = $controllerNamespace;
-        $request->controllerName = $controllerName;
-        $request->servicesRoot = $servicesRoot;
+        $translator = new static(
+            $project,
+            $controllerNamespace,
+            $controllerName,
+            $controllerVersion,
+            $servicesRoot
+        );
 
-        return $request;
+        return $translator;
     }
 
     /**

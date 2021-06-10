@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 namespace Medusa\App\ApiResolver;
 
-use Medusa\Http\Simple\ServerException;
-use Medusa\Http\Simple\ServerRequest;
+use Medusa\Http\Simple\Exception\ServerException;
+use Medusa\Http\Simple\MessageInterface;
 use function explode;
 use function ip2long;
 use function is_string;
@@ -17,25 +17,25 @@ use function sprintf;
 class Doorman {
 
     /**
-     * @param ServerRequest  $request
-     * @param ResolverConfig $resolverConfig
-     * @param ServiceConfig  $serviceConfig
+     * @param MessageInterface $request
+     * @param ResolverConfig   $resolverConfig
+     * @param ServiceConfig    $serviceConfig
      * @return bool
      * @throws ServerException
      */
-    public static function accessAllowed(ServerRequest $request, ResolverConfig $resolverConfig, ServiceConfig $serviceConfig): bool {
+    public static function accessAllowed(MessageInterface $request, ResolverConfig $resolverConfig, ServiceConfig $serviceConfig): bool {
         $self = new self();
         return $self->hasAccess($request, $resolverConfig, $serviceConfig);
     }
 
     /**
-     * @param ServerRequest  $request
-     * @param ResolverConfig $resolverConfig
-     * @param ServiceConfig  $serviceConfig
+     * @param MessageInterface $request
+     * @param ResolverConfig   $resolverConfig
+     * @param ServiceConfig    $serviceConfig
      * @return bool
      * @throws ServerException
      */
-    public function hasAccess(ServerRequest $request, ResolverConfig $resolverConfig, ServiceConfig $serviceConfig): bool {
+    public function hasAccess(MessageInterface $request, ResolverConfig $resolverConfig, ServiceConfig $serviceConfig): bool {
         if ($serviceConfig->getAccessType() === 'int') {
             return $this->checkInternalAccessAllowed($request, $resolverConfig);
         }
@@ -43,11 +43,11 @@ class Doorman {
     }
 
     /**
-     * @param ServerRequest  $request
-     * @param ResolverConfig $resolverConfig
+     * @param MessageInterface $request
+     * @param ResolverConfig   $resolverConfig
      * @return bool
      */
-    private function checkInternalAccessAllowed(ServerRequest $request, ResolverConfig $resolverConfig): bool {
+    private function checkInternalAccessAllowed(MessageInterface $request, ResolverConfig $resolverConfig): bool {
         $remoteAddressAsLong = ip2long($request->getRemoteAddress());
         foreach ($resolverConfig->getInternalNetworks() as $ipCIDR) {
             [$networkAddress, $CIDR] = explode('/', $ipCIDR);
@@ -62,9 +62,9 @@ class Doorman {
     }
 
     /**
-     * @param ServerRequest  $request
-     * @param ResolverConfig $resolverConfig
-     * @param ServiceConfig  $config
+     * @param MessageInterface $request
+     * @param ResolverConfig   $resolverConfig
+     * @param ServiceConfig    $config
      * @return bool
      * @throws Exception\DatabaseConnectionException
      * @throws Exception\DatabaseException
@@ -72,7 +72,7 @@ class Doorman {
      * @throws Exception\StatementException
      * @throws ServerException
      */
-    private function checkAccess(ServerRequest $request, ResolverConfig $resolverConfig, ServiceConfig $config): bool {
+    private function checkAccess(MessageInterface $request, ResolverConfig $resolverConfig, ServiceConfig $config): bool {
 
         $db = new Db($resolverConfig->getDb());
         $db->connect();

@@ -13,7 +13,8 @@
     "ext-igbinary": "*",
     "ext-curl": "*",
     "ext-mysqli": "*",
-    "medusa/functions": "^1.0"
+    "medusa/functions": "^1.0",
+    "medusa/http-simple": "^0.0.2"
   },
   "autoload": {
     "psr-4": {

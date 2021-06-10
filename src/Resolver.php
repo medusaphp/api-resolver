@@ -2,32 +2,17 @@
 namespace Medusa\App\ApiResolver;
 
 use JsonException;
+use Medusa\Http\Simple\Curl;
+use Medusa\Http\Simple\MessageInterface;
+use Medusa\Http\Simple\Request;
 use Medusa\Http\Simple\Response;
-use Medusa\Http\Simple\ServerRequest;
 use Throwable;
-use function array_filter;
-use function array_merge;
-use function array_values;
-use function curl_exec;
-use function curl_init;
-use function curl_setopt;
-use function explode;
 use function file_exists;
 use function hash;
-use function implode;
 use function is_array;
 use function json_encode;
 use function microtime;
-use function stripos;
 use function strtolower;
-use const CURLOPT_COOKIESESSION;
-use const CURLOPT_CUSTOMREQUEST;
-use const CURLOPT_HEADER;
-use const CURLOPT_HTTPHEADER;
-use const CURLOPT_POSTFIELDS;
-use const CURLOPT_RETURNTRANSFER;
-use const CURLOPT_UNIX_SOCKET_PATH;
-use const CURLOPT_URL;
 
 /**
  * Class Resolver
@@ -42,19 +27,20 @@ class Resolver {
 
     }
 
-    public function start(?ServerRequest $request = null): Response {
+    public function start(?MessageInterface $request = null): MessageInterface {
 
         try {
-            $request ??= ApiRequestWrapper::createFromGlobals();
+            $request ??= Request::createFromGlobals();
+            $translator = RequestedPathTranslator::createFromGlobals();
 
-            if (!$request) {
+            if (!$translator) {
                 return new Response([
                                         'Content-Type: application/json',
                                         'HTTP/1.1 404 Malformed URL',
                                     ], '', 400);
             }
 
-            $serviceConfig = $this->determineServiceConfig($request);
+            $serviceConfig = $this->determineServiceConfig($translator);
 
             if (!$serviceConfig) {
                 return new Response([
@@ -97,13 +83,17 @@ class Resolver {
     }
 
     /**
-     * @param ServerRequest $request
+     * @param Request $translator
      * @return ServiceConfig|null
      * @throws JsonException
      */
-    public function determineServiceConfig(ServerRequest $request): ?ServiceConfig {
-        $controllerDirectoryBasename = strtolower($request->getProject()) . '/' . strtolower($request->getControllerNamespace() . '_' . $request->getControllerName());
-        $servicesRoot = $request->getServicesRoot();
+    public function determineServiceConfig(RequestedPathTranslator $translator): ?ServiceConfig {
+        $controllerDirectoryBasename = strtolower($translator->getProject())
+            . '/' . strtolower(
+                $translator->getControllerNamespace()
+                . '_' . $translator->getControllerName()
+            );
+        $servicesRoot = $translator->getServicesRoot();
         $configFile = $servicesRoot . '/services/' . $controllerDirectoryBasename . '/conf.d/env.json';
 
         if (!file_exists($configFile)) {
@@ -122,59 +112,39 @@ class Resolver {
         ]);
     }
 
-    public function forward(ServerRequest $request, ServiceConfig $conf): Response {
+    public function forward(MessageInterface $request, ServiceConfig $conf): MessageInterface {
 
+        $forwardedRequest = clone($request);
         $controllerDirectoryBasename = $conf->getControllerDirectoryBasename();
         $resolver = $conf->getResolver();
-        $headers = [
-            'X-Service-Resolver'       => ($resolver === 'self' ? ('services/' . $controllerDirectoryBasename) : ('secondaryResolver/' . $resolver)),
-            'X-Service'                => $controllerDirectoryBasename,
-            'X-Forwarded-For'          => $request->getRemoteAddress(),
-            'X-Medusa-Debug-Challenge' => $this->getDebugChallenge(),
-        ];
 
-        $headers = array_merge($request->getHeaders(), $headers);
-        unset($headers['Accept-Encoding']);
+        $forwardedRequest->addHeaders(
+            [
+                'X-Service-Resolver: ' . ($resolver === 'self' ? ('services/' . $controllerDirectoryBasename) : ('secondaryResolver/' . $resolver)),
+                'X-Service: ' . $controllerDirectoryBasename,
+                'X-Medusa-Debug-Challenge: ' . $this->getDebugChallenge(),
+            ]
+        );
+        $forwardedRequest->removeHeader('Accept-Encoding');
 
-        foreach ($headers as $key => &$header) {
-            $header = $key . ':' . $header;
-        }
-
-        $headers = array_values($headers);
         $resolverSocket = $_SERVER['API_RESOLVER'];
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, $resolverSocket);
-        curl_setopt($ch, CURLOPT_URL, 'service.resolver/' . $conf->getInterpreter() . $_SERVER['REQUEST_URI']);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $request->getMethod());
 
-        if ($request->hasBody()) {
-            $body = $request->getBody();
+        if ($forwardedRequest->hasBody()) {
+            $body = $forwardedRequest->getBody();
             if (is_array($body)) {
-                unset($headers['content-length']);
-                // Remove boundary
-                $headers['content-type'] = implode(';',
-                                                   array_filter(
-                                                       explode(';', $headers['content-type']),
-                                                       fn(string $header) => stripos($header, 'boundary=') === false
-                                                   ));
+                $forwardedRequest->removeHeader('Content-Length');
+                $forwardedRequest->removeHeaderValue('Content-Type', 'boundary');
             }
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         }
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $forwardedRequest->setUri('http://service.resolver/' . $conf->getInterpreter() . $_SERVER['REQUEST_URI']);
 
-        $response = curl_exec($ch);
+        $curl = Curl::createForRequest($forwardedRequest);
+        $curl->setSocketPath(
+            $resolverSocket
+        );
 
-        if (false === $response) {
-            return new Response([
-                                    'HTTP/1.1 500 Internal Server Error',
-                                ], '', 500);
-        }
-
-        return Response::createFromRawResponse($response);
+        return $curl->send();
     }
 
     /**
