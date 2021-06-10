@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace Medusa\App\ApiResolver;
 
+use JsonException;
 use Medusa\Http\Simple\Response;
 use Medusa\Http\Simple\ServerRequest;
 use Throwable;
@@ -12,14 +13,11 @@ use function curl_init;
 use function curl_setopt;
 use function explode;
 use function file_exists;
-use function file_get_contents;
 use function hash;
 use function implode;
 use function is_array;
-use function json_decode;
 use function json_encode;
 use function microtime;
-use function preg_match;
 use function stripos;
 use function strtolower;
 use const CURLOPT_COOKIESESSION;
@@ -101,20 +99,21 @@ class Resolver {
     /**
      * @param ServerRequest $request
      * @return ServiceConfig|null
+     * @throws JsonException
      */
     public function determineServiceConfig(ServerRequest $request): ?ServiceConfig {
         $controllerDirectoryBasename = strtolower($request->getProject()) . '/' . strtolower($request->getControllerNamespace() . '_' . $request->getControllerName());
         $servicesRoot = $request->getServicesRoot();
-        $configFile = $servicesRoot . '/services/' . $controllerDirectoryBasename . '/conf.d/.env.conf';
+        $configFile = $servicesRoot . '/services/' . $controllerDirectoryBasename . '/conf.d/env.json';
 
         if (!file_exists($configFile)) {
             return null;
         }
 
         $availableEndpoints = [];
-        $availableEndpointsConfigFile = $servicesRoot . '/' . $controllerDirectoryBasename . '/conf.d/available_endpoints.json';
+        $availableEndpointsConfigFile = $servicesRoot . '/' . $controllerDirectoryBasename . '/conf.d/availableEndpoints.json';
         if (file_exists($availableEndpointsConfigFile)) {
-            $availableEndpoints = json_decode(file_get_contents($availableEndpointsConfigFile), true);
+            $availableEndpoints = JsonConfig::load($availableEndpointsConfigFile)->getData();
         }
 
         return ServiceConfig::load($configFile, [
@@ -128,7 +127,7 @@ class Resolver {
         $controllerDirectoryBasename = $conf->getControllerDirectoryBasename();
         $resolver = $conf->getResolver();
         $headers = [
-            'X-Service-Resolver'       => ($resolver === 'self' ? ('services/' . $controllerDirectoryBasename) : ('secondary_resolver/' . $resolver)),
+            'X-Service-Resolver'       => ($resolver === 'self' ? ('services/' . $controllerDirectoryBasename) : ('secondaryResolver/' . $resolver)),
             'X-Service'                => $controllerDirectoryBasename,
             'X-Forwarded-For'          => $request->getRemoteAddress(),
             'X-Medusa-Debug-Challenge' => $this->getDebugChallenge(),

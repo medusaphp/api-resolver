@@ -6,7 +6,7 @@ use function preg_match;
 
 /**
  * Class ApiRequestWrapper
- * @package Medusa\App\ApiResolver
+ * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class ApiRequestWrapper extends ServerRequest {

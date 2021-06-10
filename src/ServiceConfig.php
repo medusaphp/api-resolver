@@ -3,25 +3,22 @@
 namespace Medusa\App\ApiResolver;
 
 use function array_merge;
-use function parse_ini_file;
 
 /**
  * Class ServiceConfig
  * @package medusa/api-resolver
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
-class ServiceConfig {
+class ServiceConfig extends JsonConfig {
 
-    public function __construct(private array $data) {
-
-    }
-
-    public static function load(string $path, array $additionalConfig = []) {
-        return new self(array_merge(parse_ini_file($path), $additionalConfig));
+    public static function load(string $path, array $additionalConfig = []): static {
+        $config = parent::load($path);
+        $config->data = array_merge($config->data, $additionalConfig);
+        return $config;
     }
 
     public function getResolver(): string {
-        return $this->data['secondary_resolver'] ?? 'self';
+        return $this->data['secondaryResolver'] ?? 'self';
     }
 
     public function getAvailableEndpoints(): array {
