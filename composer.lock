@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e68bbda56ebf6a96a634aaeb21a8acb8",
+    "content-hash": "fe758645c0a51a3b5dc1e5d80aff97ca",
     "packages": [
         {
             "name": "medusa/functions",
@@ -50,16 +50,16 @@
         },
         {
             "name": "medusa/http-simple",
-            "version": "0.0.2",
+            "version": "0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/medusaphp/http-simple.git",
-                "reference": "58cca533d1a78d9264cca10974b0813bfda89548"
+                "reference": "2e91df4db8e2a072d42b74733f3ffd125a74f0e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/58cca533d1a78d9264cca10974b0813bfda89548",
-                "reference": "58cca533d1a78d9264cca10974b0813bfda89548",
+                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/2e91df4db8e2a072d42b74733f3ffd125a74f0e4",
+                "reference": "2e91df4db8e2a072d42b74733f3ffd125a74f0e4",
                 "shasum": ""
             },
             "require": {
@@ -87,9 +87,9 @@
             ],
             "support": {
                 "issues": "https://github.com/medusaphp/http-simple/issues",
-                "source": "https://github.com/medusaphp/http-simple/tree/0.0.2"
+                "source": "https://github.com/medusaphp/http-simple/tree/0.0.3"
             },
-            "time": "2021-06-10T11:19:39+00:00"
+            "time": "2021-06-10T11:48:19+00:00"
         }
     ],
     "packages-dev": [
