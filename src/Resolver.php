@@ -13,9 +13,9 @@ use function file_exists;
 use function hash;
 use function is_array;
 use function json_encode;
-use function Medusa\DevTools\dd;
 use function microtime;
-use function strtolower;
+use const JSON_UNESCAPED_LINE_TERMINATORS;
+use const JSON_UNESCAPED_SLASHES;
 
 /**
  * Class Resolver
@@ -45,9 +45,17 @@ class Resolver {
             $serviceConfig = $this->determineServiceConfig($translator);
 
             if (!$serviceConfig) {
+                $body = '';
+                if ($this->config->isDebugModeEnabled()) {
+                    $body = json_encode(
+                        ['Couldnt find a env.json in following directory \'' . $translator->getConfigDirectory() . '\''],
+                        JSON_UNESCAPED_SLASHES
+                    );
+                }
+
                 return new Response([
                                         'Content-Type: application/json',
-                                    ], '', 404, 'Not Found', $protocol);
+                                    ], $body, 404, 'Not Found', $protocol);
             }
 
             if ($serviceConfig->getAccessType() !== 'int' && (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']))) {
@@ -86,26 +94,22 @@ class Resolver {
      * @throws JsonException
      */
     public function determineServiceConfig(RequestedPathTranslator $translator): ?ServiceConfig {
-        $controllerDirectoryBasename = strtolower($translator->getProject())
-            . '/' . strtolower(
-                $translator->getControllerNamespace()
-                . '_' . $translator->getControllerName()
-            );
-        $servicesRoot = $translator->getServicesRoot();
-        $configFile = $servicesRoot . '/services/' . $controllerDirectoryBasename . '/conf.d/env.json';
+
+        $configDirectory = $translator->getConfigDirectory();
+        $configFile = $configDirectory . '/env.json';
 
         if (!file_exists($configFile)) {
             return null;
         }
 
         $availableEndpoints = [];
-        $availableEndpointsConfigFile = $servicesRoot . '/' . $controllerDirectoryBasename . '/conf.d/availableEndpoints.json';
+        $availableEndpointsConfigFile = $configDirectory . '/availableEndpoints.json';
         if (file_exists($availableEndpointsConfigFile)) {
             $availableEndpoints = JsonConfig::load($availableEndpointsConfigFile)->getData();
         }
 
         return ServiceConfig::load($configFile, [
-            'controllerDirectoryBasename' => $controllerDirectoryBasename,
+            'controllerDirectoryBasename' => $translator->getControllerDirectoryBasename(),
             'availableEndpoints'          => $availableEndpoints,
         ]);
     }
@@ -120,11 +124,10 @@ class Resolver {
             [
                 'Medusa-Service-Resolver: ' . ($resolver === 'self' ? ('services/' . $controllerDirectoryBasename) : ('secondaryResolver/' . $resolver)),
                 'Medusa-Service: ' . $controllerDirectoryBasename,
-                'Medusa-Debug-Challenge: ' . $this->getDebugChallenge(),
+                'X-Medusa-Debug-Challenge: ' . $this->getDebugChallenge(),
             ]
         );
         $forwardedRequest->removeHeader('Accept-Encoding');
-
         $resolverSocket = $_SERVER['MEDUSA_API_RESOLVER_SOCK'];
 
         if ($forwardedRequest->hasBody()) {
@@ -140,6 +143,7 @@ class Resolver {
         $forwardingVars[] = 'MEDUSA_API_SERVICE_REPOSITORY_PATH';
         $forwardingVars = array_flip($forwardingVars);
         $forwardingVars = array_intersect_key($_SERVER, $forwardingVars);
+        $forwardingVars['X-Medusa-Api-Service-Repository'] = $_SERVER['MEDUSA_API_SERVICE_REPOSITORY'];
         $forwardedRequest->addHeaders($forwardingVars);
 
         $curl = Curl::createForRequest($forwardedRequest);

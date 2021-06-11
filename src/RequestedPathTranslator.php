@@ -2,6 +2,7 @@
 namespace Medusa\App\ApiResolver;
 
 use function preg_match;
+use function strtolower;
 
 /**
  * Class RequestedPathTranslator
@@ -9,6 +10,8 @@ use function preg_match;
  * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
  */
 class RequestedPathTranslator {
+
+    private string $controllerDirectoryBasename;
 
     public function __construct(
         protected string $project,
@@ -41,11 +44,25 @@ class RequestedPathTranslator {
         return $translator;
     }
 
+    public function getConfigDirectory() {
+        $servicesRoot = $this->getServicesRoot();
+        $configFile = $servicesRoot . '/services/' . $this->getControllerDirectoryBasename() . '/conf.d';
+        return $configFile;
+    }
+
     /**
      * @return string
      */
     public function getServicesRoot(): string {
         return $this->servicesRoot;
+    }
+
+    public function getControllerDirectoryBasename(): string {
+        return $this->controllerDirectoryBasename ??= strtolower($this->getProject())
+            . '/' . strtolower(
+                $this->getControllerNamespace()
+                . '_' . $this->getControllerName()
+            );
     }
 
     /**
