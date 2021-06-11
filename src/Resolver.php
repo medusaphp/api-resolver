@@ -7,10 +7,13 @@ use Medusa\Http\Simple\MessageInterface;
 use Medusa\Http\Simple\Request;
 use Medusa\Http\Simple\Response;
 use Throwable;
+use function array_flip;
+use function array_intersect_key;
 use function file_exists;
 use function hash;
 use function is_array;
 use function json_encode;
+use function Medusa\DevTools\dd;
 use function microtime;
 use function strtolower;
 
@@ -27,17 +30,16 @@ class Resolver {
 
     }
 
-    public function start(?MessageInterface $request = null): MessageInterface {
+    public function start(?MessageInterface $request = null): Response {
 
         try {
             $request ??= Request::createFromGlobals();
             $translator = RequestedPathTranslator::createFromGlobals();
-
+            $protocol = $_SERVER['SERVER_PROTOCOL'];
             if (!$translator) {
                 return new Response([
                                         'Content-Type: application/json',
-                                        'HTTP/1.1 404 Malformed URL',
-                                    ], '', 400);
+                                    ], '', 400, 'Malformed URL', $protocol);
             }
 
             $serviceConfig = $this->determineServiceConfig($translator);
@@ -45,23 +47,20 @@ class Resolver {
             if (!$serviceConfig) {
                 return new Response([
                                         'Content-Type: application/json',
-                                        'HTTP/1.1 404 Not Found',
-                                    ], '', 404);
+                                    ], '', 404, 'Not Found', $protocol);
             }
 
             if ($serviceConfig->getAccessType() !== 'int' && (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']))) {
                 return new Response([
                                         'Content-Type: application/json',
                                         'WWW-Authenticate: Basic realm="auth"',
-                                        'HTTP/1.1 401 Unauthorized',
-                                    ], '', 401);
+                                    ], '', 401, 'Unauthorized', $protocol);
             }
 
             if (!Doorman::accessAllowed($request, $this->config, $serviceConfig)) {
                 return new Response([
                                         'Content-Type: application/json',
-                                        'HTTP/1.1 401 Unauthorized ' . $request->getRemoteAddress(),
-                                    ], '', 401);
+                                    ], '', 401, 'Unauthorized' . $request->getRemoteAddress(), $protocol);
             }
 
             return $this->forward($request, $serviceConfig);
@@ -78,8 +77,7 @@ class Resolver {
 
         return new Response([
                                 'Content-Type: application/json',
-                                'HTTP/1.1 500 Internal Server Error',
-                            ], $errorBody ?? '', 500);
+                            ], $errorBody ?? '', 500, 'Internal Server Error');
     }
 
     /**
@@ -120,14 +118,14 @@ class Resolver {
 
         $forwardedRequest->addHeaders(
             [
-                'X-Service-Resolver: ' . ($resolver === 'self' ? ('services/' . $controllerDirectoryBasename) : ('secondaryResolver/' . $resolver)),
-                'X-Service: ' . $controllerDirectoryBasename,
-                'X-Medusa-Debug-Challenge: ' . $this->getDebugChallenge(),
+                'Medusa-Service-Resolver: ' . ($resolver === 'self' ? ('services/' . $controllerDirectoryBasename) : ('secondaryResolver/' . $resolver)),
+                'Medusa-Service: ' . $controllerDirectoryBasename,
+                'Medusa-Debug-Challenge: ' . $this->getDebugChallenge(),
             ]
         );
         $forwardedRequest->removeHeader('Accept-Encoding');
 
-        $resolverSocket = $_SERVER['API_RESOLVER'];
+        $resolverSocket = $_SERVER['MEDUSA_API_RESOLVER_SOCK'];
 
         if ($forwardedRequest->hasBody()) {
             $body = $forwardedRequest->getBody();
@@ -138,6 +136,11 @@ class Resolver {
         }
 
         $forwardedRequest->setUri('http://service.resolver/' . $conf->getInterpreter() . $_SERVER['REQUEST_URI']);
+        $forwardingVars = $this->config->getForwardingEnvVars();
+        $forwardingVars[] = 'MEDUSA_API_SERVICE_REPOSITORY_PATH';
+        $forwardingVars = array_flip($forwardingVars);
+        $forwardingVars = array_intersect_key($_SERVER, $forwardingVars);
+        $forwardedRequest->addHeaders($forwardingVars);
 
         $curl = Curl::createForRequest($forwardedRequest);
         $curl->setSocketPath(

@@ -26,7 +26,7 @@ class RequestedPathTranslator {
             return null;
         }
 
-        $servicesRoot = $_SERVER['API_SERVICES_LOCATION'];
+        $servicesRoot = $_SERVER['MEDUSA_API_SERVICE_REPOSITORY_PATH'];
 
         [, $project, $controllerNamespace, $controllerName, $controllerVersion] = $matches;
 

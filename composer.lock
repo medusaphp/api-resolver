@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "medusa/functions",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/medusaphp/functions.git",
-                "reference": "6652602fb9c611fd3622856b87c27f6aaeedf57d"
+                "reference": "fc12b6338c81e63976bd3ee97c4aca2940f31e86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/functions/zipball/6652602fb9c611fd3622856b87c27f6aaeedf57d",
-                "reference": "6652602fb9c611fd3622856b87c27f6aaeedf57d",
+                "url": "https://api.github.com/repos/medusaphp/functions/zipball/fc12b6338c81e63976bd3ee97c4aca2940f31e86",
+                "reference": "fc12b6338c81e63976bd3ee97c4aca2940f31e86",
                 "shasum": ""
             },
             "require": {
@@ -44,22 +44,22 @@
             "description": "functions",
             "support": {
                 "issues": "https://github.com/medusaphp/functions/issues",
-                "source": "https://github.com/medusaphp/functions/tree/1.0.0"
+                "source": "https://github.com/medusaphp/functions/tree/1.1.0"
             },
-            "time": "2021-06-08T08:43:00+00:00"
+            "time": "2021-06-11T11:55:50+00:00"
         },
         {
             "name": "medusa/http-simple",
-            "version": "0.0.3",
+            "version": "0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/medusaphp/http-simple.git",
-                "reference": "2e91df4db8e2a072d42b74733f3ffd125a74f0e4"
+                "reference": "d33aec1ecf97d9477611d9e6e96282b5447be824"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/2e91df4db8e2a072d42b74733f3ffd125a74f0e4",
-                "reference": "2e91df4db8e2a072d42b74733f3ffd125a74f0e4",
+                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/d33aec1ecf97d9477611d9e6e96282b5447be824",
+                "reference": "d33aec1ecf97d9477611d9e6e96282b5447be824",
                 "shasum": ""
             },
             "require": {
@@ -87,9 +87,9 @@
             ],
             "support": {
                 "issues": "https://github.com/medusaphp/http-simple/issues",
-                "source": "https://github.com/medusaphp/http-simple/tree/0.0.3"
+                "source": "https://github.com/medusaphp/http-simple/tree/0.0.4"
             },
-            "time": "2021-06-10T11:48:19+00:00"
+            "time": "2021-06-11T11:52:03+00:00"
         }
     ],
     "packages-dev": [

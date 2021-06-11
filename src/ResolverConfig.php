@@ -23,6 +23,13 @@ class ResolverConfig extends JsonConfig {
     }
 
     /**
+     * @return array
+     */
+    public function getForwardingEnvVars(): array {
+        return $this->data['forwardingEnvVars'] ?? [];
+    }
+
+    /**
      * @return bool
      */
     public function isDebugModeEnabled(): bool {
