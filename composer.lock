@@ -50,16 +50,16 @@
         },
         {
             "name": "medusa/http-simple",
-            "version": "0.0.4",
+            "version": "0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/medusaphp/http-simple.git",
-                "reference": "d33aec1ecf97d9477611d9e6e96282b5447be824"
+                "reference": "72cd9240cc2a9b2858e2b0bea6fcb0549f008acc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/d33aec1ecf97d9477611d9e6e96282b5447be824",
-                "reference": "d33aec1ecf97d9477611d9e6e96282b5447be824",
+                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/72cd9240cc2a9b2858e2b0bea6fcb0549f008acc",
+                "reference": "72cd9240cc2a9b2858e2b0bea6fcb0549f008acc",
                 "shasum": ""
             },
             "require": {
@@ -87,9 +87,9 @@
             ],
             "support": {
                 "issues": "https://github.com/medusaphp/http-simple/issues",
-                "source": "https://github.com/medusaphp/http-simple/tree/0.0.4"
+                "source": "https://github.com/medusaphp/http-simple/tree/0.0.5"
             },
-            "time": "2021-06-11T11:52:03+00:00"
+            "time": "2021-06-11T14:44:16+00:00"
         }
     ],
     "packages-dev": [
