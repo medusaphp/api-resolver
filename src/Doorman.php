@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace Medusa\App\ApiResolver;
 
+use Medusa\App\ApiResolver\Database\MedusaPDO;
 use Medusa\Http\Simple\Exception\ServerException;
 use Medusa\Http\Simple\MessageInterface;
 use function explode;
@@ -16,6 +17,8 @@ use function sprintf;
  */
 class Doorman {
 
+    private MedusaPDO $db;
+
     /**
      * @param MessageInterface $request
      * @param ResolverConfig   $resolverConfig
@@ -25,6 +28,15 @@ class Doorman {
      */
     public static function accessAllowed(MessageInterface $request, ResolverConfig $resolverConfig, ServiceConfig $serviceConfig): bool {
         $self = new self();
+        $config = $resolverConfig->getDb();
+        $dsn = sprintf(
+            'mysql:port=%d;host=%s;dbname=%s;charset=utf8mb4',
+            $config['port'],
+            $config['host'],
+            $config['db'],
+        );
+        $self->db = new MedusaPDO($dsn, $config['user'], $config['pass']);
+
         return $self->hasAccess($request, $resolverConfig, $serviceConfig);
     }
 
@@ -74,9 +86,6 @@ class Doorman {
      */
     private function checkAccess(MessageInterface $request, ResolverConfig $resolverConfig, ServiceConfig $config): bool {
 
-        $db = new Db($resolverConfig->getDb());
-        $db->connect();
-
         $user = $_SERVER['PHP_AUTH_USER'];
         $pass = $_SERVER['PHP_AUTH_PW'];
 
@@ -95,16 +104,16 @@ WHERE
       account_enabled = true
   AND accountip_enabled = true
   AND userpermission_enabled = true
-  AND userpermission_service = ?
-  AND account_username = ?
-  AND accountip_ip = ? 
+  AND userpermission_service = :service
+  AND account_username = :user
+  AND accountip_ip = :ip
 ';
         $sql = sprintf($sql, $resolverConfig->getDb()['tablePrefix'] ?? '');
-        $result = $db->getAssoc($sql, [
-                $controllerDirectoryBasename,
-                $user,
-                $request->getRemoteAddress(),
-            ])[0] ?? [];
+        $result = $this->db->getRowAsAssocArray($sql, [
+            'service' => $controllerDirectoryBasename,
+            'user'    => $user,
+            'ip'      => $request->getRemoteAddress(),
+        ]);
 
         if (!$result) {
             return false;
