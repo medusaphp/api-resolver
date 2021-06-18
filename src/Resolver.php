@@ -2,6 +2,7 @@
 namespace Medusa\App\ApiResolver;
 
 use JsonException;
+use Medusa\App\ApiResolver\InternalApi\InternalApiServer;
 use Medusa\Http\Simple\Curl;
 use Medusa\Http\Simple\MessageInterface;
 use Medusa\Http\Simple\Request;
@@ -11,10 +12,10 @@ use function array_flip;
 use function array_intersect_key;
 use function file_exists;
 use function hash;
+use function in_array;
 use function is_array;
 use function json_encode;
 use function microtime;
-use const JSON_UNESCAPED_LINE_TERMINATORS;
 use const JSON_UNESCAPED_SLASHES;
 
 /**
@@ -35,11 +36,23 @@ class Resolver {
         try {
             $request ??= Request::createFromGlobals();
             $translator = RequestedPathTranslator::createFromGlobals();
+
             $protocol = $_SERVER['SERVER_PROTOCOL'];
+
             if (!$translator) {
-                return new Response([
-                                        'Content-Type: application/json',
-                                    ], '', 400, 'Malformed URL', $protocol);
+                $secret = $request->getHeader('X-Medusa-Api-Resolver-Access-Secret')[0] ?? null;
+
+                if (
+                    !$secret
+                    || $secret !== $this->config->getApiServerAccessSecret()
+                    || !in_array($request->getRemoteAddress(), $this->config->getApiServerIpAddressWhitelist(), true)
+                ) {
+                    return new Response([
+                                            'Content-Type: application/json',
+                                        ], '', 400, 'Malformed URL', $protocol);
+                }
+
+                return (new InternalApiServer($this->config))->handleRequest($request);
             }
 
             $serviceConfig = $this->determineServiceConfig($translator);

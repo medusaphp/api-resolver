@@ -30,6 +30,20 @@ class ResolverConfig extends JsonConfig {
     }
 
     /**
+     * @return string
+     */
+    public function getApiServerAccessSecret(): string {
+        return $this->data['apiServer']['accessSecret'] ?? '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getApiServerIpAddressWhitelist(): array {
+        return $this->data['apiServer']['ipAddressWhitelist'] ?? [];
+    }
+
+    /**
      * @return bool
      */
     public function isDebugModeEnabled(): bool {
