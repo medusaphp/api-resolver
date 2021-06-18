@@ -102,7 +102,7 @@ class Resolver {
     }
 
     /**
-     * @param Request $translator
+     * @param RequestedPathTranslator $translator
      * @return ServiceConfig|null
      * @throws JsonException
      */

@@ -4,6 +4,7 @@ namespace Medusa\App\ApiResolver\InternalApi;
 use Medusa\App\ApiResolver\Container;
 use Medusa\App\ApiResolver\Database\MedusaPDO;
 use Medusa\App\ApiResolver\InternalApi\Controller\AccountIp;
+use Medusa\App\ApiResolver\InternalApi\Controller\Service;
 use Medusa\App\ApiResolver\InternalApi\Controller\User;
 use Medusa\App\ApiResolver\InternalApi\Controller\Userpermission;
 use Medusa\App\ApiResolver\ResolverConfig;
@@ -27,6 +28,7 @@ class InternalApiServer {
 
     private array $routes = [
         'GET'    => [
+            '/Service' => [Service::class, 'getAll'],
             '/User' => [
                 ''       => [User::class, 'getAll'],
                 '/(\d+)' => [
