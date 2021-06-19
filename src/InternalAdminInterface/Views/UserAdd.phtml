@@ -1,0 +1,106 @@
+<?php
+
+if (!function_exists('formatDate')) {
+    function formatDate($date) {
+
+        if (!$date) {
+            return '';
+        }
+        $date = new DateTime($date);
+        return $date->format('d.m.Y H:i:s');
+    }
+}
+?>
+
+
+<style>
+.radio-group {
+    display: flex;
+    margin-bottom: 1rem;
+}
+</style>
+<div class="card">
+    <form autocomplete="off" method="post">
+        <div class="form-row">
+            <label for="username">API Benutzername</label>
+            <label for="password">API Kennwort</label>
+            <label></label>
+            <label for="yes">Aktiv</label>
+
+        </div>
+        <div class="form-row">
+            <input name="username" id="username" type="text" autocomplete="off">
+            <input name="password" id="password" type="password" autocomplete="off">
+            <input type="button" id="generator" value=" generieren">
+            <div class="radio-group">
+                <div class="radio-wrapper">
+                    <input value="yes" id="yes" class="radio" name="enabled" type="radio" autocomplete="off">
+                    <label for="yes">aktiv</label>
+                </div>
+
+                <div class="radio-wrapper">
+                    <input value="no" id="no" class="radio" checked name="enabled" type="radio" autocomplete="off">
+                    <label for="no">gesperrt</label>
+                </div>
+            </div>
+
+            <input type="submit" value="hinzufügen">
+        </div>
+    </form>
+</div>
+
+<script>
+    "use strict";
+
+    (function() {
+        function rand(max) {
+            let rand =
+                Math.floor(Math.random() * max);
+
+            let crypto = window.crypto || window.msCrypto
+            if (crypto) {
+
+                let int32 = new Uint32Array(1);
+                do
+                    crypto.getRandomValues(int32);
+                while (int32[0] - int32[0] % max > 4294967296 - max) ;
+                rand += int32[0] % max;
+            }
+            return rand % max;
+        }
+
+        let password = "";
+        let passwordField = document.querySelector("#password");
+
+        function changeFieldType() {
+            console.log(this.value, password)
+            console.log(this.value === password)
+
+            if (this.value !== password) {
+                passwordField.type = "password";
+                passwordField.removeEventListener("keydown", changeFieldType);
+                passwordField.removeEventListener("keyup", changeFieldType);
+            }
+        }
+
+        document.querySelector("#generator").addEventListener("click", function() {
+            password = "";
+            const LENGTH = 20;
+            const CHAR_SETS = [
+                ["0123456789"],
+                ["abcdefghijklmnopqrstuvwxyz"],
+                ["ABCDEFGHIJKLMNOPQRSTUVWXYZ"],
+                ["!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
+            ].join("").split("");
+
+            for (let i = 0; i < LENGTH; i++) {
+                password += CHAR_SETS[rand(CHAR_SETS.length)];
+            }
+
+            passwordField.value = password;
+            passwordField.type = "text";
+            passwordField.addEventListener("keydown", changeFieldType);
+            passwordField.addEventListener("keyup", changeFieldType);
+        });
+    })();
+</script>

@@ -16,6 +16,7 @@ use function in_array;
 use function is_array;
 use function json_encode;
 use function microtime;
+use function str_starts_with;
 use const JSON_UNESCAPED_SLASHES;
 
 /**
@@ -36,10 +37,14 @@ class Resolver {
         try {
             $request ??= Request::createFromGlobals();
             $translator = RequestedPathTranslator::createFromGlobals();
-
-            $protocol = $_SERVER['SERVER_PROTOCOL'];
+            $protocol = $request->getProtocolVersion();
 
             if (!$translator) {
+
+                if (str_starts_with($request->getUri()->getPath(), '/__admin__/') && $this->config->isAdminInterfaceEnabled()) {
+                    return (new InternalAdminInterface\InternalAdminInterface($this->config))->handleRequest($request);
+                }
+
                 $secret = $request->getHeader('X-Medusa-Api-Resolver-Access-Secret')[0] ?? null;
 
                 if (
@@ -127,7 +132,7 @@ class Resolver {
         ]);
     }
 
-    public function forward(MessageInterface $request, ServiceConfig $conf): MessageInterface {
+    public function forward(MessageInterface $request, ServiceConfig $conf): Response {
 
         $forwardedRequest = clone($request);
         $controllerDirectoryBasename = $conf->getControllerDirectoryBasename();

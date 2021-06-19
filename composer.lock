@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aeb7a13313e3440f0366b64a58b81c86",
+    "content-hash": "57ff665b1e9fc28b9420875ef6e9b530",
     "packages": [
         {
             "name": "medusa/filesystem",
@@ -56,16 +56,16 @@
         },
         {
             "name": "medusa/functions",
-            "version": "1.1.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/medusaphp/functions.git",
-                "reference": "fc12b6338c81e63976bd3ee97c4aca2940f31e86"
+                "reference": "41846592d75b10073fab41639a3a68cf876d6d17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/functions/zipball/fc12b6338c81e63976bd3ee97c4aca2940f31e86",
-                "reference": "fc12b6338c81e63976bd3ee97c4aca2940f31e86",
+                "url": "https://api.github.com/repos/medusaphp/functions/zipball/41846592d75b10073fab41639a3a68cf876d6d17",
+                "reference": "41846592d75b10073fab41639a3a68cf876d6d17",
                 "shasum": ""
             },
             "require": {
@@ -92,52 +92,9 @@
             "description": "functions",
             "support": {
                 "issues": "https://github.com/medusaphp/functions/issues",
-                "source": "https://github.com/medusaphp/functions/tree/1.1.0"
+                "source": "https://github.com/medusaphp/functions/tree/1.4.0"
             },
-            "time": "2021-06-11T11:55:50+00:00"
-        },
-        {
-            "name": "medusa/http-simple",
-            "version": "0.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/medusaphp/http-simple.git",
-                "reference": "a9c5acf5ad203c34e1ab6de5cf0b8c0cf0d07b67"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/a9c5acf5ad203c34e1ab6de5cf0b8c0cf0d07b67",
-                "reference": "a9c5acf5ad203c34e1ab6de5cf0b8c0cf0d07b67",
-                "shasum": ""
-            },
-            "require": {
-                "medusa/functions": "^1.0",
-                "php": ">=8.0"
-            },
-            "require-dev": {
-                "medusa/dev-tools": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Medusa\\Http\\Simple\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Pascal Schnell",
-                    "email": "pascal.schnell@getmedusa.org"
-                }
-            ],
-            "support": {
-                "issues": "https://github.com/medusaphp/http-simple/issues",
-                "source": "https://github.com/medusaphp/http-simple/tree/0.0.6"
-            },
-            "time": "2021-06-13T13:42:51+00:00"
+            "time": "2021-06-19T22:59:10+00:00"
         }
     ],
     "packages-dev": [
@@ -233,7 +190,8 @@
         "ext-igbinary": "*",
         "ext-curl": "*",
         "ext-mysqli": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-openssl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.1.0"

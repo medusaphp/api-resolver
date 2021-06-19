@@ -44,6 +44,27 @@ class ResolverConfig extends JsonConfig {
     }
 
     /**
+     * @return array
+     */
+    public function getAdminInterfaceUsers(): array {
+        return $this->data['adminInterface']['users'] ?? [];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdminInterfaceCryptPassword(): string {
+        return $this->data['adminInterface']['cryptPassword'] ?? '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdminInterfaceEnabled(): bool {
+        return $this->data['adminInterface']['enabled'] ?? false;
+    }
+
+    /**
      * @return bool
      */
     public function isDebugModeEnabled(): bool {

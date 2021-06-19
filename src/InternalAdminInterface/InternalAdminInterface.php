@@ -1,12 +1,11 @@
 <?php declare(strict_types = 1);
-namespace Medusa\App\ApiResolver\InternalApi;
+namespace Medusa\App\ApiResolver\InternalAdminInterface;
 
 use Medusa\App\ApiResolver\Container;
 use Medusa\App\ApiResolver\Database\MedusaPDO;
+use Medusa\App\ApiResolver\InternalAdminInterface\Controller\Login;
 use Medusa\App\ApiResolver\InternalApi\Controller\AccountIp;
 use Medusa\App\ApiResolver\InternalApi\Controller\Service;
-use Medusa\App\ApiResolver\InternalApi\Controller\User;
-use Medusa\App\ApiResolver\InternalApi\Controller\Userpermission;
 use Medusa\App\ApiResolver\ResolverConfig;
 use Medusa\Http\Simple\MessageInterface;
 use Medusa\Http\Simple\Response;
@@ -14,90 +13,62 @@ use Throwable;
 use function array_merge;
 use function array_values;
 use function call_user_func;
+use function explode;
 use function is_array;
 use function json_encode;
+use function mb_substr;
 use function preg_match;
 use function sprintf;
 
 /**
- * Class InternalApi
- * @package medusa/api-resolver
- * @author  Pascal Schnell <pascal.schnell@getmedusa.org>
+ * Class InternalAdminInterface
+ * @package Medusa\App\ApiResolver\InternalAdminInterface
+ * @author  Pascale Schnell <pascale.schnell@check24.de>
  */
-class InternalApiServer {
+class InternalAdminInterface {
 
     private array $routes = [
-        'GET'    => [
+        'GET'  => [
+            '/logout'  => [Controller\Login::class, 'handleLogout'],
+            '/login'   => [Controller\Login::class, 'handleLogin'],
+            '/'        => [Controller\User::class, 'index'],
             '/Service' => [Service::class, 'getAll'],
-            '/User' => [
-                ''       => [User::class, 'getAll'],
+            '/User'    => [
+                '/Add'   => [Controller\User::class, 'add'],
                 '/(\d+)' => [
-                    ''            => [User::class, 'get'],
+                    '/Permission' => [
+                        '/Add'   => [Controller\User::class, 'permissionAdd'],
+                        ''       => [Controller\User::class, 'permission'],
+                        '/(\d+)' => [
+                            '/Delete' => [Controller\User::class, 'deletePermission'],
+                        ],
+                    ],
+                    '/Delete'     => [Controller\User::class, 'delete'],
+                    '/Edit'       => [Controller\User::class, 'edit'],
+                    ''            => [Controller\User::class, 'get'],
                     '/Ip'         => [
                         ''       => [AccountIp::class, 'getAll'],
                         '/(\d+)' => [
                             '' => [AccountIp::class, 'get'],
                         ],
                     ],
-                    '/Permission' => [
-                        ''       => [Userpermission::class, 'getAll'],
-                        '/(\d+)' => [
-                            '' => [Userpermission::class, 'get'],
-                        ],
-                    ],
+
                 ],
             ],
         ],
-        'PUT'    => [
-            '/User' => [
+        'POST' => [
+            '/login' => [Controller\Login::class, 'handleLogin'],
+            '/User'  => [
+                '/Add'   => [Controller\User::class, 'add'],
                 '/(\d+)' => [
-                    ''            => [User::class, 'edit'],
-                    '/Ip'         => [
-                        '/(\d+)' => [
-                            '' => [AccountIp::class, 'edit'],
-                        ],
-                    ],
                     '/Permission' => [
+                        '/Add'   => [Controller\User::class, 'permissionAdd'],
                         '/(\d+)' => [
-                            '' => [Userpermission::class, 'edit'],
+                            '/Delete' => [Controller\User::class, 'deletePermission'],
                         ],
                     ],
-                ],
-            ],
-        ],
-        'POST'   => [
-            '/User' => [
-                ''       => [User::class, 'create'],
-                '/(\d+)' => [
-                    '/Ip'         => [
-                        ''       => [AccountIp::class, 'create'],
-                        '/(\d+)' => [
-                        ],
-                    ],
-                    '/Permission' => [
-                        ''       => [Userpermission::class, 'create'],
-                        '/(\d+)' => [
-                        ],
-                    ],
-                ],
-            ],
-        ],
-        'DELETE' => [
-            '/User' => [
-                '/(\d+)' => [
-                    ''            => [User::class, 'delete'],
-                    '/Ip'         => [
-                        ''       => [AccountIp::class, 'delete'],
-                        '/(\d+)' => [
-                            '' => [AccountIp::class, 'delete'],
-                        ],
-                    ],
-                    '/Permission' => [
-                        ''       => [Userpermission::class, 'delete'],
-                        '/(\d+)' => [
-                            '' => [Userpermission::class, 'delete'],
-                        ],
-                    ],
+                    '/Delete'     => [Controller\User::class, 'delete'],
+                    '/Edit'       => [Controller\User::class, 'edit'],
                 ],
             ],
         ],
@@ -111,7 +82,7 @@ class InternalApiServer {
     public function handleRequest(MessageInterface $request): Response {
 
         $routes = $this->buildRoute($this->routes[$request->getMethod()]);
-        $requestUri = mb_substr($request->getUri()->getPath(), 8);
+        $requestUri = mb_substr($request->getUri()->getPath(), 10);
         $result = null;
         $code = 200;
         $phrase = 'OK';
@@ -119,11 +90,10 @@ class InternalApiServer {
 
         $container = new Container(
             [
-                'tablePrefix'    => function() {
+                'tablePrefix'         => function() {
                     return $this->config->getDb()['tablePrefix'] ?? '';
                 },
-                MedusaPDO::class => function() {
-
+                MedusaPDO::class      => function() {
                     $config = $this->config->getDb();
                     $dsn = sprintf(
                         'mysql:port=%d;host=%s;dbname=%s;charset=utf8mb4',
@@ -133,19 +103,34 @@ class InternalApiServer {
                     );
                     return new MedusaPDO($dsn, $config['user'], $config['pass']);
                 },
+                ResolverConfig::class => fn() => $this->config,
             ]);
 
         foreach ($routes as $route => $fn) {
             $route = '#^' . $route . '$#';
+
+            $requestUri = explode('?', $requestUri, 2)[0];
+
             if (preg_match($route, $requestUri, $matches)) {
+
+                if ($requestUri !== '/login' && !Login::checkAuth($request, $this->config)) {
+                    return new Response([
+                                            'location: /__admin__/login',
+                                        ], '', 200, 'Unauthorized', $protocol);
+                }
 
                 unset($matches[0]);
                 $matches = array_values($matches);
                 try {
                     $result = call_user_func($fn, $request, $container, ...$matches);
+                    if ($result instanceof Response) {
+                        return $result;
+                    }
+                    $view = new View('Main');
+                    $result = $view->assign('content', $result)->render();
                     return new Response([
-                                            'Content-Type: application/json',
-                                        ], json_encode($result), $code, $phrase, $protocol);
+                                            'Content-Type: text/html',
+                                        ], $result, $code, $phrase, $protocol);
                 } catch (Throwable $exception) {
                     $result = [
                         '_error' => $exception->getMessage(),

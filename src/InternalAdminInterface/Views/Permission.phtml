@@ -1,0 +1,46 @@
+<?php
+
+if (!function_exists('formatDate')) {
+    function formatDate($date) {
+
+        if (!$date) {
+            return '';
+        }
+        $date = new DateTime($date);
+        return $date->format('d.m.Y H:i:s');
+    }
+}
+?>
+
+<?php if ($permissions): ?>
+    <table class="data-table card">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Service</th>
+            <th>Erstellt</th>
+            <th>letzte Aktualisierung</th>
+<!--            <th>Optionen</th>-->
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($permissions as $permission): ?>
+        <?php if (!$permission['enabled']) {continue;}?>
+            <tr data-user-id="<?= $permission['id']; ?>">
+                <td><?= $permission['id']; ?></td>
+                <td><?= $permission['service']; ?></td>
+                <td><?= formatDate($permission['created']); ?></td>
+                <td><?= formatDate($permission['updated']); ?></td>
+<!--                <td class="option">-->
+<!--                    <a href="/__admin__/User/--><?//=$permission['id'];?><!--/Delete">Löschen</a>-->
+<!--                </td>-->
+            </tr>
+
+        <?php endforeach; ?>
+        </tbody>
+
+    </table>
+
+<?php endif; ?>

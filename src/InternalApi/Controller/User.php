@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace Medusa\App\ApiResolver\InternalApi\Controller;
 
+use JsonException;
 use Medusa\App\ApiResolver\Container;
 use Medusa\App\ApiResolver\InternalApi\ClientException;
 use Medusa\App\ApiResolver\InternalApi\DAO\UserDAO;
@@ -25,7 +26,7 @@ class User {
      * @return array
      */
     public static function delete(Request $message, Container $container, int $userId): array {
-        return (new UserDAO($container))->delete($userId, $ipId);
+        return (new UserDAO($container))->delete($userId);
     }
 
     /**
@@ -33,7 +34,7 @@ class User {
      * @param Container $container
      * @return array
      * @throws ClientException
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function create(Request $message, Container $container): array {
         $requestedParams = $message->getParsedBody();
@@ -41,6 +42,9 @@ class User {
             throw new ClientException('Invalid parameter body');
         }
         (function(string $username, string &$password, bool $enabled = false) {
+            if (empty($password)) {
+                throw new ClientException('Password must not be empty');
+            }
             $password = password_hash($password, PASSWORD_BCRYPT);
         })(...$requestedParams);
 
@@ -64,7 +68,7 @@ class User {
      * @param int       $userId
      * @return array
      * @throws ClientException
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function edit(Request $message, Container $container, int $userId): array {
         $requestedParams = $message->getParsedBody();

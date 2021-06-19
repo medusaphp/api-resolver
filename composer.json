@@ -13,10 +13,10 @@
     "ext-igbinary": "*",
     "ext-curl": "*",
     "ext-mysqli": "*",
-    "medusa/functions": "^1.0",
-    "medusa/http-simple": "0.*",
     "ext-mbstring": "*",
-    "medusa/filesystem": "*"
+    "medusa/filesystem": "*",
+    "ext-openssl": "*",
+    "medusa/functions": "^1.3"
   },
   "autoload": {
     "psr-4": {

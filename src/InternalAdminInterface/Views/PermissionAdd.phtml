@@ -1,0 +1,55 @@
+<?php
+
+if (!function_exists('formatDate')) {
+    function formatDate($date) {
+
+        if (!$date) {
+            return '';
+        }
+        $date = new DateTime($date);
+        return $date->format('d.m.Y H:i:s');
+    }
+}
+?>
+
+
+<style>
+    .radio-group {
+        display: flex;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<?php
+
+
+?>
+<div class="card">
+    <form method="post">
+        <div class="form-row">
+            <?php foreach ($services as $service => $enabled): ?>
+                <label for="<?= $service; ?>_yes"><?= $service; ?></label>
+            <?php endforeach; ?>
+        </div>
+        <div class="form-row">
+            <?php foreach ($services as $service => $enabled): ?>
+
+                <div class="radio-group">
+                    <div class="radio-wrapper">
+                        <input value="yes" id="<?= $service; ?>_yes" <?php if ($enabled):?>checked<?php endif;?> class="radio" name="<?= $service; ?>" type="radio"
+                               autocomplete="off">
+                        <label for="<?= $service; ?>_yes">freigegeben</label>
+                    </div>
+
+                    <div class="radio-wrapper">
+                        <input value="no" id="<?= $service; ?>_no" class="radio" <?php if (!$enabled):?>checked<?php endif;?>  name="<?= $service; ?>"
+                               type="radio" autocomplete="off">
+                        <label for="<?= $service; ?>_no">gesperrt</label>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <div class="card-spacer"></div>
+            <input type="submit" value="speichern">
+        </div>
+    </form>
+</div>
