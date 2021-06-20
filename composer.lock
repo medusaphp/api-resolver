@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "57ff665b1e9fc28b9420875ef6e9b530",
+    "content-hash": "22ba4f660a94a36a0cadfdcbb50b336e",
     "packages": [
         {
             "name": "medusa/filesystem",
@@ -95,21 +95,64 @@
                 "source": "https://github.com/medusaphp/functions/tree/1.4.0"
             },
             "time": "2021-06-19T22:59:10+00:00"
+        },
+        {
+            "name": "medusa/http-simple",
+            "version": "0.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/medusaphp/http-simple.git",
+                "reference": "ac3e4837394aa338ec81c75025e0446279c29a80"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/medusaphp/http-simple/zipball/ac3e4837394aa338ec81c75025e0446279c29a80",
+                "reference": "ac3e4837394aa338ec81c75025e0446279c29a80",
+                "shasum": ""
+            },
+            "require": {
+                "medusa/functions": "^1.0",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "medusa/dev-tools": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Medusa\\Http\\Simple\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pascal Schnell",
+                    "email": "pascal.schnell@getmedusa.org"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/medusaphp/http-simple/issues",
+                "source": "https://github.com/medusaphp/http-simple/tree/0.0.10"
+            },
+            "time": "2021-06-20T12:25:11+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "medusa/dev-tools",
-            "version": "1.0.8",
+            "version": "1.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/medusaphp/dev-tools.git",
-                "reference": "a27d8c052be57d854db209706ffa7733b301f498"
+                "reference": "109c2d1b5495fdd660587447b8b327cf1227f69a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/dev-tools/zipball/a27d8c052be57d854db209706ffa7733b301f498",
-                "reference": "a27d8c052be57d854db209706ffa7733b301f498",
+                "url": "https://api.github.com/repos/medusaphp/dev-tools/zipball/109c2d1b5495fdd660587447b8b327cf1227f69a",
+                "reference": "109c2d1b5495fdd660587447b8b327cf1227f69a",
                 "shasum": ""
             },
             "require": {
@@ -134,22 +177,22 @@
             "description": "Helper functions for debugging",
             "support": {
                 "issues": "https://github.com/medusaphp/dev-tools/issues",
-                "source": "https://github.com/medusaphp/dev-tools/tree/1.0.8"
+                "source": "https://github.com/medusaphp/dev-tools/tree/1.0.9"
             },
-            "time": "2021-06-12T23:05:40+00:00"
+            "time": "2021-06-20T11:08:05+00:00"
         },
         {
             "name": "medusa/dev-tools-alias",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/medusaphp/dev-tools-alias.git",
-                "reference": "ceb01bbd7151fb6c3a7a581bccf77e7b2401a7a9"
+                "reference": "1a460fd9ffff792b26f6bc5e4988648534820de7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/medusaphp/dev-tools-alias/zipball/ceb01bbd7151fb6c3a7a581bccf77e7b2401a7a9",
-                "reference": "ceb01bbd7151fb6c3a7a581bccf77e7b2401a7a9",
+                "url": "https://api.github.com/repos/medusaphp/dev-tools-alias/zipball/1a460fd9ffff792b26f6bc5e4988648534820de7",
+                "reference": "1a460fd9ffff792b26f6bc5e4988648534820de7",
                 "shasum": ""
             },
             "require": {
@@ -175,9 +218,9 @@
             "description": "Helper functions for debugging (shortcuts)",
             "support": {
                 "issues": "https://github.com/medusaphp/dev-tools-alias/issues",
-                "source": "https://github.com/medusaphp/dev-tools-alias/tree/1.0.1"
+                "source": "https://github.com/medusaphp/dev-tools-alias/tree/1.0.2"
             },
-            "time": "2021-06-12T23:07:24+00:00"
+            "time": "2021-06-20T11:09:29+00:00"
         }
     ],
     "aliases": [],

@@ -20,7 +20,7 @@ if (!function_exists('formatDate')) {
 }
 </style>
 <div class="card">
-    <form autocomplete="off" method="post">
+    <form method="post">
         <div class="form-row">
             <label for="username">API Benutzername</label>
             <label for="password">API Kennwort</label>
@@ -29,8 +29,8 @@ if (!function_exists('formatDate')) {
 
         </div>
         <div class="form-row">
-            <input name="username" id="username" type="text" autocomplete="off">
-            <input name="password" id="password" type="password" autocomplete="off">
+            <input name="username" id="username" type="text" autocomplete="new-username">
+            <input autocomplete="new-password" name="password" id="password" type="password">
             <input type="button" id="generator" value=" generieren">
             <div class="radio-group">
                 <div class="radio-wrapper">
