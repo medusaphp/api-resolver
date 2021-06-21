@@ -1,0 +1,223 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+    position: relative;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #575757;
+    font-size: 0.8rem;
+}
+
+.data-table {
+    border-spacing: 0;
+    border-collapse: separate;
+}
+
+.data-table tbody td, .data-table thead th {
+    text-align: left;
+    border-bottom: solid 1px black;
+    padding: 0.6rem;
+}
+
+.data-table tbody td.option {
+    padding: 0;
+}
+
+.data-table tbody td.option a {
+    display: inline-block;
+    line-height: 2rem;
+}
+
+nav {
+    width: 225px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #008865;
+    overflow: hidden;
+}
+
+nav a, nav a:visited, nav a:hover {
+    color: #fff;
+    text-decoration: none;
+
+}
+
+nav div.loginname {
+    color: #fff;
+    padding: 2rem 2rem 0;
+}
+nav div.loginname span {
+    font-size: 1.2rem;
+    line-height: 3rem;
+    font-style: italic;
+}
+
+nav ul {
+    padding: 2rem 0 0 0;
+    margin: 0;
+}
+
+nav ul li {
+    height: 2rem;
+    list-style-type: none;
+    display: block;
+}
+
+nav ul li:hover {
+    background-color: #888865;
+}
+
+nav ul li a {
+    line-height: 2rem;
+    padding: 0 2rem;
+}
+
+.container {
+    flex-flow: row nowrap;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+}
+
+.content-wrapper {
+    left: 240px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    /*position: absolute;*/
+}
+
+.content {
+    color: #171717;
+    width: 1024px;
+    display: flex;
+    flex-flow: column nowrap;
+    position: relative;
+}
+
+.card {
+    box-shadow: 0 2px 2px -1px rgb(152 162 179 / 30%), 0 1px 5px -2px rgb(152 162 179 / 30%);
+    background-color: #fff;
+    border: 1px solid #D3DAE6;
+    border-radius: 4px;
+    flex-grow: 1;
+}
+
+form {
+    display: flex;
+    flex-flow: row;
+    padding: 1.4rem;
+}
+
+.card-padding {
+    padding: 1.4rem;
+}
+
+h1 {
+    font-size: 1.2rem;
+    text-align: center;
+    font-style: italic;
+    font-weight: normal;
+}
+
+.card.error {
+    padding: 1.4rem;
+    color: red;
+}
+
+form .form-row {
+    flex-grow: 0;
+}
+
+.form-row textarea {
+    font-size: 0.8rem;
+    width: 20rem;
+    min-height: 10rem;
+    display: block;
+    line-height: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: left;
+    padding: 0.4rem;
+
+}
+.form-row input {
+    font-size: 0.8rem;
+    width: 20rem;
+    display: block;
+    line-height: 2.8rem;
+    height: 2.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.form-row label {
+    display: block;
+    line-height: 2.8rem;
+    height: 2.8rem;
+    margin-right: 1rem;;
+    margin-bottom: 1rem;;
+}
+
+.card-spacer {
+    height: 1rem;
+}
+
+.radio-wrapper:nth-child(even) {
+    right: 0.0625rem;
+}
+
+.radio-wrapper:first-child, .radio-wrapper:nth-child(2) {
+    top: 0.0625rem;
+}
+
+.radio-wrapper {
+    outline: none;
+    margin-top: 0;
+}
+
+.radio-wrapper {
+    flex: 0 0 50%;
+    background-color: #fff;
+    position: relative;
+}
+
+.radio {
+    position: absolute;
+    opacity: 0;
+    appearance: none;
+}
+
+.radio-wrapper:nth-child(2) label {
+    border-top-right-radius: 0.1875rem;
+}
+
+.radio-wrapper label {
+    height: 2.8rem;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    border: 0.0625rem solid #dcdcdc;
+    line-height: initial;
+    padding: 0;
+    margin: 0;
+}
+
+.radio + label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.radio-wrapper input:checked + label {
+    background-color: #ecf7fd;
+    border-color: #005ea8;
+    z-index: 7;
+}

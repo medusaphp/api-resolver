@@ -13,8 +13,11 @@
     "ext-igbinary": "*",
     "ext-curl": "*",
     "ext-mysqli": "*",
-    "medusa/functions": "^1.0",
-    "medusa/http-simple": "0.*"
+    "ext-mbstring": "*",
+    "medusa/filesystem": "0.*",
+    "ext-openssl": "*",
+    "medusa/http-simple": "0.*",
+    "medusa/functions": "1.*"
   },
   "autoload": {
     "psr-4": {
@@ -22,6 +25,6 @@
     }
   },
   "require-dev": {
-    "medusa/dev-tools": "^1.0"
+    "medusa/dev-tools-alias": "*"
   }
 }

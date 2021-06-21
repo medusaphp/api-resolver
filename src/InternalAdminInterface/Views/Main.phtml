@@ -1,0 +1,72 @@
+<?php
+use Medusa\App\ApiResolver\InternalAdminInterface\View;
+?><!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><?= $title; ?></title>
+</head>
+<style>
+    <?php require __DIR__ . '/Main.css';?>
+</style>
+<body>
+<div class="container">
+
+    <?php if ($showNavi ?? true): ?>
+        <nav class="navi">
+            <div class="loginname">Angemeldet als:<br><span><?= $adminUser['username']; ?></span></div>
+            <ul>
+                <li>
+                    <a href="/__admin__/logout">Abmelden</a>
+                </li>
+            </ul>
+            <hr>
+            <ul>
+                <li>
+                    <a href="/__admin__/">API User anzeigen</a>
+                </li>
+                <li>
+                    <a href="/__admin__/User/Add">API User hinzufügen</a>
+                </li>
+
+                <?php foreach (View::getNavEntries() as $additionalNavEntry): ?>
+                    <li>
+                        <a href="<?= $additionalNavEntry['url']; ?>"><?= $additionalNavEntry['label']; ?></a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <ul>
+                <li>
+                    <a href="/__admin__/AdminUser/Show">Admins anzeigen</a>
+                </li>
+                <?php foreach (View::getNavEntries(1) as $additionalNavEntry): ?>
+                    <li>
+                        <a href="<?= $additionalNavEntry['url']; ?>"><?= $additionalNavEntry['label']; ?></a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+
+    <div class="content-wrapper">
+        <div class="content">
+            <?php if ($headline): ?>
+                <h1 class="card card-padding"><?= $headline; ?></h1>
+            <?php endif; ?>
+            <div class="card-spacer"></div>
+            <?php if ($error): ?>
+                <div class="card error">
+                    <?= $error; ?>
+                </div>
+                <div class="card-spacer"></div>
+
+            <?php endif; ?>
+            <?= $content; ?>
+        </div>
+    </div>
+</div>
+</body>
+</html>

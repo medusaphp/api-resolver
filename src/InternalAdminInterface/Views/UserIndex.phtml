@@ -1,0 +1,60 @@
+<?php
+
+if (!function_exists('formatDate')) {
+    function formatDate($date) {
+
+        if (!$date) {
+            return '';
+        }
+        $date = new DateTime($date);
+        return $date->format('d.m.Y H:i:s');
+    }
+}
+?>
+
+<?php if ($userList): ?>
+    <table class="data-table card">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Benutzername</th>
+            <th>Aktiv</th>
+            <th>Erstellt</th>
+            <th>letzte Aktualisierung</th>
+            <th>Optionen</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($userList as $user): ?>
+            <tr data-user-id="<?= $user['id']; ?>">
+                <td><?= $user['id']; ?></td>
+                <td><?= $user['username']; ?></td>
+                <td><?= $user['enabled'] ? 'JA' : 'NEIN'; ?></td>
+                <td><?= formatDate($user['created']); ?></td>
+                <td><?= formatDate($user['updated']); ?></td>
+                <td class="option">
+                    <a href="/__admin__/User/<?=$user['id'];?>/Permission">Berechtigungen</a> |
+                    <a href="/__admin__/User/<?=$user['id'];?>/Edit">Bearbeiten</a> |
+                    <a href="/__admin__/User/<?=$user['id'];?>/Delete">Löschen</a>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+        </tbody>
+
+    </table>
+
+    <script>
+
+        function goto(target) {
+            window.location = "/__admin__" + target
+        }
+        [].slice.call(document.querySelectorAll("[data-user-id]"), 0).forEach(function(element) {
+            element.addEventListener("click", function(event) {
+                goto("/User/" + this.dataset.userId + "/Permission");
+            });
+        });
+    </script>
+<?php endif; ?>

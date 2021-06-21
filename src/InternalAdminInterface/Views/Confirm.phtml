@@ -1,0 +1,62 @@
+<style>
+    .overlay {
+        background-color: rgba(56, 56, 56, 0.4);
+        height: 100vw;
+        width: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+    }
+
+    body {
+        overflow: hidden;
+    }
+
+    .hint {
+        max-width: 30rem;
+        margin: auto;
+        margin-top: 5%;
+        min-height: 20%;
+        font-size: 1.2rem;
+        line-height: 2rem;
+    }
+
+    .hint form input {
+        flex-grow: 1;
+        font-size: 1.2rem;
+        padding: 0.8rem;
+        width: 50%;
+    }
+
+    .hint form input:last-child {
+        margin-left: 2rem;;
+    }
+</style>
+</div>
+</div>
+</div>
+<div class="overlay">
+    <div class="card hint card-padding">
+        <div class="inner">
+            <?= $hint; ?>
+        </div>
+        <div class="button-box">
+            <div class="card-spacer"></div>
+            <form method="post">
+                <input type="submit" name="confirm" value="Ja">
+                <input id="abort" type="button" name="confirm" value="Nein">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector("#abort").addEventListener("click", function() {
+        history.replaceState({},"","/__admin__/");
+        history.back();
+    });
+</script>
+<div>
+    <div>
+        <div>
+

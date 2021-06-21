@@ -2,6 +2,7 @@
 namespace Medusa\App\ApiResolver;
 
 use JsonException;
+use Medusa\App\ApiResolver\InternalApi\InternalApiServer;
 use Medusa\Http\Simple\Curl;
 use Medusa\Http\Simple\MessageInterface;
 use Medusa\Http\Simple\Request;
@@ -11,10 +12,11 @@ use function array_flip;
 use function array_intersect_key;
 use function file_exists;
 use function hash;
+use function in_array;
 use function is_array;
 use function json_encode;
 use function microtime;
-use const JSON_UNESCAPED_LINE_TERMINATORS;
+use function str_starts_with;
 use const JSON_UNESCAPED_SLASHES;
 
 /**
@@ -35,11 +37,29 @@ class Resolver {
         try {
             $request ??= Request::createFromGlobals();
             $translator = RequestedPathTranslator::createFromGlobals();
-            $protocol = $_SERVER['SERVER_PROTOCOL'];
+            $protocol = $request->getProtocolVersion();
+
             if (!$translator) {
-                return new Response([
-                                        'Content-Type: application/json',
-                                    ], '', 400, 'Malformed URL', $protocol);
+
+                if (
+                    str_starts_with($request->getUri()->getPath(), '/__admin__/')
+                    && $this->config->isAdminInterfaceEnabled()) {
+                    return (new InternalAdminInterface\InternalAdminInterface($this->config))->handleRequest($request);
+                }
+
+                $secret = $request->getHeader('X-Medusa-Api-Resolver-Access-Secret')[0] ?? null;
+
+                if (
+                    !$secret
+                    || $secret !== $this->config->getApiServerAccessSecret()
+                    || !in_array($request->getRemoteAddress(), $this->config->getApiServerIpAddressWhitelist(), true)
+                ) {
+                    return new Response([
+                                            'Content-Type: application/json',
+                                        ], '', 400, 'Malformed URL', $protocol);
+                }
+
+                return (new InternalApiServer($this->config))->handleRequest($request);
             }
 
             $serviceConfig = $this->determineServiceConfig($translator);
@@ -89,7 +109,7 @@ class Resolver {
     }
 
     /**
-     * @param Request $translator
+     * @param RequestedPathTranslator $translator
      * @return ServiceConfig|null
      * @throws JsonException
      */
@@ -114,7 +134,7 @@ class Resolver {
         ]);
     }
 
-    public function forward(MessageInterface $request, ServiceConfig $conf): MessageInterface {
+    public function forward(MessageInterface $request, ServiceConfig $conf): Response {
 
         $forwardedRequest = clone($request);
         $controllerDirectoryBasename = $conf->getControllerDirectoryBasename();

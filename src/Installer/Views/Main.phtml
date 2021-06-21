@@ -1,0 +1,81 @@
+<?php
+?><!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><?= $title; ?></title>
+</head>
+<style>
+    <?php require __DIR__ . '/Main.css';?>
+</style>
+<body>
+<div class="container">
+
+    <h1>WebInstaller</h1>
+
+    <div class="content-wrapper">
+        <div class="content">
+            <?php if ($headline): ?>
+                <h1 class="card card-padding"><?= $headline; ?></h1>
+            <?php endif; ?>
+            <div class="card-spacer"></div>
+            <?php if ($error): ?>
+                <div class="card error">
+                    <?= $error; ?>
+                </div>
+                <div class="card-spacer"></div>
+            <?php endif; ?>
+            <?= $content; ?>
+            <?php if ($checks): ?>
+                <div class="card card-padding">
+
+                    <?php foreach ($checks as $check): ?>
+                        <div>
+                            <?= $check['desc']; ?>... <?php if ($check['ok']): ?>OK<?php else: ?>FAILED<?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="card-spacer"></div>
+
+            <?php endif; ?>
+
+            <?php if ($questions): ?>
+                <div class="card">
+                    <form method="post">
+                        <div class="form-row">
+                            <?php foreach ($questions as $question): ?>
+                                <label for="<?= $question['name']; ?>"><?= $question['label']; ?></label>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="form-row">
+
+                            <?php foreach ($questions as $question): ?>
+                                <input name="<?= $question['name']; ?>" id="<?= $question['name']; ?>"
+                                       type="<?= $question['type']; ?>"
+                                       value="<?= $question['value']; ?>"
+                                       autocomplete="off">
+                            <?php endforeach; ?>
+
+                            <input type="submit" value="weiter">
+                        </div>
+                    </form>
+                </div>
+                <div class="card-spacer"></div>
+
+            <?php endif; ?>
+
+            <div class="card card-padding">
+                <a class="nextStep" href="<?= $nextStep; ?>">
+                    <?php if ($error): ?>Überspringen<?php else: ?>Weiter<?php endif; ?>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>
